@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineProps, onMounted } from 'vue'
+import { ref, computed, defineProps, onMounted, watch, nextTick } from 'vue'
 import LineText from './LineText.vue'
 
 const props = defineProps({
@@ -11,6 +11,7 @@ const props = defineProps({
 
 const inputTextarea = ref(null)
 const inputTextareaWidth = ref(0)
+const inputTextareaHeight = ref(0)
 
 const input = ref('')
 
@@ -39,8 +40,19 @@ const getInputTextareaWidth = () => {
   inputTextareaWidth.value = inputTextarea.value.offsetWidth
 }
 
+const getInputTextareaHeight = () => {
+  inputTextareaHeight.value = inputTextarea.value.scrollHeight
+}
+
+watch(() => input.value, () => {
+  nextTick(() => {
+    getInputTextareaHeight()
+  })
+})
+
 onMounted(() => {
   getInputTextareaWidth()
+  getInputTextareaHeight()
 })
 
 </script>
@@ -63,6 +75,7 @@ onMounted(() => {
       v-model="input"
       rows="10"
       cols="30"
+      :style="`height: ${inputTextareaHeight || 200}px`"
     />
   </div>
   <div>Error Lines: {{ errorLines }}</div>
@@ -82,8 +95,8 @@ onMounted(() => {
   overflow: auto;
 }
 .input-textarea {
-  height: 9999px;
   line-height: 21px;
+  font-size: 14px;
   overflow-y: hidden;
   padding: 0;
   border: 0;

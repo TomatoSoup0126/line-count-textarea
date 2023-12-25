@@ -68,5 +68,6 @@ watch(() => props.lineText, () => {
   position: absolute;
   top: -9999px;
   visibility: hidden;
+  font-size: 14px;
 }
 </style>
