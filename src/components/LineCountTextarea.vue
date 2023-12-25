@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, defineProps } from 'vue'
+import { ref, computed, defineProps, onMounted } from 'vue'
+import LineText from './LineText.vue'
 
 const props = defineProps({
   validations: {
@@ -7,6 +8,9 @@ const props = defineProps({
     default: () => ([])
   }
 })
+
+const inputTextarea = ref(null)
+const inputTextareaWidth = ref(0)
 
 const input = ref('')
 
@@ -31,23 +35,31 @@ const errorLines = computed(() => {
   return invalidLines
 })
 
+const getInputTextareaWidth = () => {
+  inputTextareaWidth.value = inputTextarea.value.offsetWidth
+}
+
+onMounted(() => {
+  getInputTextareaWidth()
+})
+
 </script>
 
 <template>
   <div class="textarea-container">
     <div class="line-container">
-      <span
-        v-for="line in linesCount"
-        :key="line"
-        class="line-number"
-        :class="{
-          'line-number--error': errorLines.includes(line)
-        }"
-      >
-      </span>
+      <LineText
+        v-for="lineNumber in linesCount"
+        :key="lineNumber"
+        :line-number="lineNumber"
+        :line-text="lines[lineNumber - 1]"
+        :is-error="errorLines.includes(lineNumber)"
+        :line-width="inputTextareaWidth"
+      />
     </div>
     <textarea
       class="input-textarea"
+      ref="inputTextarea"
       v-model="input"
       rows="10"
       cols="30"
@@ -68,26 +80,6 @@ const errorLines = computed(() => {
 
   height: 200px;
   overflow: auto;
-}
-.line-container {
-  width: 20px;
-  text-align: right;
-  height: 9999px;
-  .line-number {
-    display: block;
-    counter-increment: linenumber;
-  }
-  .line-number--error {
-    color: #ff0000;
-  }
-  .line-number::before {
-    content: counter(linenumber);
-    display: block;
-    color: #506882;
-  }
-  .line-number--error::before {
-    color: #ff0000;
-  }
 }
 .input-textarea {
   height: 9999px;
