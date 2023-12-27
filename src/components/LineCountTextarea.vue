@@ -83,19 +83,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- TODO: extract variable -->
-  <div
+  <div>
+    <div
     class="textarea-container"
     :class="{
-      'textarea-container--focus': isFocus
+      'textarea-container--focus': isFocus,
+      'textarea-container--error': errorLines.length > 0,
     }"
     :style="[
-      `background-color: ${props.backgroundColor}`,
-      `color: ${props.fontColor}`,
-      `border-radius: ${props.borderRadius}`,
+      `--background-color: ${props.backgroundColor}`,
+      `--font-color: ${props.fontColor}`,
+      `--border-radius: ${props.borderRadius}`,
       `--focus-color: ${props.focusColor}`,
       `--outline-color: ${props.outlineColor}`,
-      `border: 1px solid ${props.borderColor}`
+      `--border-color: ${props.borderColor}`,
+      `--line-height: ${props.lineHeight}`,
     ]"
   >
     <div class="line-container">
@@ -105,25 +107,24 @@ onMounted(() => {
         :line-number="lineNumber"
         :line-text="lines[lineNumber - 1]"
         :is-error="errorLines.includes(lineNumber)"
-        :line-width="inputTextareaWidth"
+        :line-height="props.lineHeight"
       />
     </div>
     <textarea
       class="input-textarea"
       ref="inputTextarea"
       v-model="input"
-      rows="10"
-      cols="30"
       :style="[
         `height: ${inputTextareaHeight || 200}px;`,
-        `background-color: ${props.backgroundColor}`,
-        `color: ${props.fontColor}`
       ]"
       @focus="isFocus = true"
       @blur="isFocus = false"
     />
+    </div>
+    <div>
+      <slot name="error" :errorLines="errorLines" />
+    </div>
   </div>
-  <div>Error Lines: {{ errorLines }}</div>
 </template>
 
 <style scoped>
@@ -131,24 +132,32 @@ onMounted(() => {
   display: inline-flex;
   gap: 10px;
   font-family: monospace;
-  line-height: 21px;
-  border-radius: 2px;
   padding: 20px 10px;
-  height: 200px;
   overflow: auto;
-  transition: all 0.1s linear;
+  height: 200px;
+  line-height: 21px;
+  color: var(--font-color);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: all 0.05s linear;
 }
 .textarea-container--focus {
-  border: 1px solid var(--focus-color) !important;
+  border: 1px solid var(--focus-color);
   outline: 4px solid var(--outline-color);
 }
+.textarea-container--error {
+  border: 1px solid red;
+  outline: none;
+}
 .input-textarea {
-  line-height: 21px;
   font-size: 14px;
   overflow-y: hidden;
   padding: 0;
   border: 0;
-  color: #FFF;
+  line-height: 21px;
+  color: var(--font-color);
+  background-color: var(--background-color);
   min-width: 500px;
   outline: none;
   resize: none;

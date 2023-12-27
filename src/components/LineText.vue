@@ -12,10 +12,6 @@ const props = defineProps({
   isError: {
     type: Boolean,
     default: false
-  },
-  lineWidth: {
-    type: Number,
-    default: 0
   }
 })
 
@@ -43,7 +39,9 @@ watch(() => props.lineText, () => {
   :class="{
     'line-number--error': props.isError,
   }"
-  :style="`--column-count: ${columnCount}`"
+  :style="[
+    `--column-count: ${columnCount}`,
+] "
 >
   {{ props.lineNumber }}
 </span>
@@ -58,6 +56,7 @@ watch(() => props.lineText, () => {
 <style scoped>
 .line-number {
   display: block;
+  font-size: 14px;
   height: calc(21px * var(--column-count));
 }
 .line-number--error {
