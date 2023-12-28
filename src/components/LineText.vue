@@ -12,6 +12,10 @@ const props = defineProps({
   isError: {
     type: Boolean,
     default: false
+  },
+  lineWidth: {
+    type: Number,
+    default: 0
   }
 })
 

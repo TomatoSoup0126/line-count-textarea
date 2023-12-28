@@ -108,6 +108,7 @@ onMounted(() => {
         :line-text="lines[lineNumber - 1]"
         :is-error="errorLines.includes(lineNumber)"
         :line-height="props.lineHeight"
+        :line-width="inputTextareaWidth"
       />
     </div>
     <textarea
